@@ -125,6 +125,7 @@ suggestion, though feel free to alter it:
    + 15 minutes reviewing Picobot
    + 1 hour coming up with a new syntax design
    + 30 minutes writing the example(s) in your ideal syntax
+   + 30 minutes skimming the provided example program and API
    + 4-5 hours implementing your design
    + 1 hour answering the questions in `design.md` and `evaluation.md`
    + 45 minutes: critique / peer review
