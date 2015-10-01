@@ -43,9 +43,9 @@ You should (re-)familiarize yourself with
 
 Design your own syntax for Picobot. Try to come up with a design that is
 faithful to the domain (of maze-navigation), that does not add any new features
-(e.g., non-determinism), but that is also not restricted to students in CS 5.
-The more novel your syntax, the better, assuming that it's faithful to the
-domain. **Design your syntax as an ideal, i.e., don't worry at all about how
+(e.g., non-determinism), but that is also not necessarily restricted to students
+in CS 5. The more novel your syntax, the better, assuming that it's faithful to
+the domain. **Design your syntax as an ideal, i.e., don't worry at all about how
 you'll implement it.**
 
 **Note:** If you're in a group of three, you should come up with *two* designs.
@@ -53,7 +53,8 @@ You must describe and justify both designs, but you'll need to implement only
 one of them.
 
 Re-write the empty room program in your new syntax, in the file 
-`example-ideal.txt`.
+`example-ideal.txt`. **Note:** If you're in the group of three, put your two 
+examples in this file.
 
 Describe and justify your design, in the file `design.md` (see that file for
 instructions on what to write). **Note:** If you're in a group of three,
@@ -63,7 +64,8 @@ describe both designs.
 Implement the syntax you designed, as an internal DSL in Scala. To do so, you'll
 want to consider how you'll connect your syntax to the semantics of Picobot and 
 how to organize your code. You'll also need to include a couple of sample
-programs and keep a running "diary" of your work. 
+programs and keep a running "diary" of your work. **Note:** If you're in the 
+group of three, you only need to implement one of the designs.
 
 ### Picobot semantics
 
@@ -80,7 +82,7 @@ to do anything special with the library to build and run your code.
 
 #### Building and running your code
 
-You should be able to load the code into ScalaIDE in the usual way (i.e., by
+You should be able to load your code into ScalaIDE in the usual way (i.e., by
 executing `sbt eclipse` in the top-level directory).
 
 You can also run the program on the command line, by typing `sbt run` in the top
@@ -104,14 +106,32 @@ Include at least two sample programs:
   2. `src/main/scala/piconot/RightHand.scala`: a program in your internal DSL 
   that uses the right-hand rule to solve the maze in `resources/maze.txt`.
 
-## A running diary
-As you work, comment on your experience in the file `evaluation.md`. In
-particular, each time you change your ideal syntax, you should describe what
-changed and why you made the change (e.g., your original idea was too hard to
-implement or it didn't match well with the library calls) You should also answer
-the following questions: On a scale of 1–10 (where 10 is "a lot"), how much did
-you have to change your syntax? On a scale of 1–10 (where 10 is "very
-difficult"), how difficult was it to map your syntax to the semantics?
+## A running diary As you work, comment on your experience in the file
+`evaluation.md`. In particular, each time you change your ideal syntax, you
+should describe what changed and why you made the change (e.g., your original
+idea required an operator that you couldn't implement in Scala or integrate with
+your other ides ). You should also answer the following questions: On a scale of
+1–10 (where 10 is "a lot"), how much did you have to change your syntax? On a
+scale of 1–10 (where 10 is "very difficult"), how difficult was it to map your
+syntax to the provided API?
+
+## Advice
+
+**Give yourself a time budget.** This project can easily eat up hours of time,
+as you try to get your language _just right_. If you've got that kind of time --
+go for it! But if your time is limited, a budget would be good. Here's a
+suggestion, though feel free to alter it:
+
+   + 15 minutes reviewing Picobot
+   + 1 hour coming up with a new syntax design
+   + 30 minutes writing the example(s) in your ideal syntax
+   + 4-5 hours implementing your design
+   + 1 hour answering the questions in `design.md` and `evaluation.md`
+   + 45 minutes: critique / peer review
+
+Note that this doesn't leave _that_ much time for implementing your design. You
+might have to make hard choices and radically change your syntax to get things
+working. That's okay! You can always come back to it when you have more time.
 
 ## Peer-review another team's work
 Comment on another team's design and implementation. You should look through
@@ -126,3 +146,7 @@ their implementation. You might consider the following questions:
   - Are there any implementation tricks that you can suggest to the team?
   Anything you see that might make the implementation easier or more like the
   original design?
+
+**Each member of your team should comment on another team's work**. In other 
+words, treat the critique as if you were doing it by yourself (although you can
+definitely work side-by-side with your partner(s), if you'd like).

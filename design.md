@@ -1,16 +1,13 @@
-Who is the target for this design, e.g., are you assuming any knowledge on the
-part of the language users?
+# Design
 
-Why did you choose this design, i.e., why did you think it would be a good idea
-for users to express the maze-searching computation using this syntax?
+## Who is the target for this design, e.g., are you assuming any knowledge on the part of the language users?
 
-What behaviors are easier to express in your design than in Picobot’s original
-design?  If there are no such behaviors, why not?
+## Why did you choose this design, i.e., why did you think it would be a good idea for users to express the maze-searching computation using this syntax?
 
-What behaviors are more difficult to express in your design than in Picobot’s
-original design? If there are no such behaviors, why not?
+## What behaviors are easier to express in your design than in Picobot’s original design?  If there are no such behaviors, why not?
 
-On a scale of 1–10 (where 10 is “very different”), how different is your syntax
-from PicoBot’s original design?
+## What behaviors are more difficult to express in your design than in Picobot’s original design? If there are no such behaviors, why not?
 
-Is there anything you don’t like about your design?
+## On a scale of 1–10 (where 10 is “very different”), how different is your syntax from PicoBot’s original design?
+
+## Is there anything you don’t like about your design?
