@@ -117,6 +117,7 @@ syntax to the provided API?
 
 ## Advice
 
+### Time
 **Give yourself a time budget.** This project can easily eat up hours of time,
 as you try to get your language _just right_. If you've got that kind of time --
 go for it! But if your time is limited, a budget would be good. Here's a
@@ -133,6 +134,56 @@ suggestion, though feel free to alter it:
 Note that this doesn't leave _that_ much time for implementing your design. You
 might have to make hard choices and radically change your syntax to get things
 working. That's okay! You can always come back to it when you have more time.
+
+### Implementation techniques
+
+As a brief summary, here are some things about Scala that may be useful to know.
+This information was compiled from Chapter 11 of _Scala for the Impatient_;
+check there for much more detailed information
+
+#### Identifiers
+A valid _identifier_ (i.e., name) can include the following characters
+   + any ASCII character _except_ `(`, `)`, `[`, `]`, `{`, `}`, `.`, `,`, `;`,
+     `'` or `"`.
+   + Unicode characters from the 
+    [Sm](http://www.fileformat.info/info/unicode/category/Sm/list.htm) and 
+    [So](http://www.fileformat.info/info/unicode/category/So/list.htm) categories
+
+
+#### Precedence and Associativity
+
+_Precedence_ determines how to decide which of two _different_ operations to
+perform first.
+
+_Associativity_ determines how to decide which of two applications of the _same_
+operation to perform first.
+
+In Scala, the _first_ character of an operator's name determines its precedence, 
+in increasing order as follows:
+
+```
+(all letters)
+|
+^
+&
+< >
+= !
+:
++ -
+* / %
+(all other special characters)
+````
+
+So, `*` has higher precedence than `+`, etc. Unsurprisingly, there are a few
+caveats:
+   1. Assignment has lower precedence than any other operations
+   1. Postfix operators have lower precedence than infix operators
+
+In Scala, the _last_ character of an operator's name determines its
+associativity, according to these rules:
+   1. Operators that end with a colon `:` are right-associative
+   1. Assignment is right-associative
+   1. Every other operator is left-associative
 
 ## Peer-review another team's work
 Comment on another team's design and implementation. You should look through
