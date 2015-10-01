@@ -77,7 +77,7 @@ object EmptyRoom extends JFXApp {
       State("3")
     ),
 
-    // State 2: fill this column from South to North
+    // State 3: fill this column from South to North
     Rule( 
       State("3"), 
       Surroundings(Open, Anything, Anything, Anything), 
