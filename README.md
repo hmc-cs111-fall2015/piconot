@@ -142,12 +142,12 @@ This information was compiled from Chapter 11 of _Scala for the Impatient_;
 check there for much more detailed information
 
 #### Identifiers
-A valid _identifier_ (i.e., name) can include the following characters
+A valid _identifier_ (i.e., name) can include the following characters:
    + any ASCII character _except_ `(`, `)`, `[`, `]`, `{`, `}`, `.`, `,`, `;`,
      `'` or `"`.
    + Unicode characters from the 
     [Sm](http://www.fileformat.info/info/unicode/category/Sm/list.htm) and 
-    [So](http://www.fileformat.info/info/unicode/category/So/list.htm) categories
+    [So](http://www.fileformat.info/info/unicode/category/So/list.htm) categories.
 
 
 #### Precedence and Associativity
