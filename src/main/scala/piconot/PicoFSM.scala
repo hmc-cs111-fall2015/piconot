@@ -1,14 +1,17 @@
 package piconot
 
 import picolib.maze.Maze
-import picolib.semantics._
+import picolib.semantics
+import scala.collection.mutable.MutableList
 
 trait PicoBot extends App {
 
-  var rules: List[Rule] = List()
+  val emptyMaze = Maze("resources/empty.txt")
+
+  val rules: MutableList[semantics.Rule] = new MutableList
   var curState : State = null
 
-  class Direction(var dir : MoveDirection) {
+  class Direction(val dir : semantics.MoveDirection) {
     def unary_+ = { new EnvList(List(this), List()) }
     def unary_- = { new EnvList(List(), List(this)) }
   }
@@ -18,7 +21,7 @@ trait PicoBot extends App {
     def +(dir : Direction) = { new EnvList(dir :: posDirs, negDirs) } // Check if it's there already
     def -(dir : Direction) = { new EnvList(posDirs, dir :: negDirs) } // Check if it's there already
     def ->(dir : Direction) = { new NeedsState(posDirs, negDirs, dir) }
-    def ->(state : State) = { new NeedsState(posDirs, negDirs, new Direction(StayHere)).and(state) }
+    def ->(state : State) = { new NeedsState(posDirs, negDirs, new Direction(semantics.StayHere)).and(state) }
   }
 
   class NeedsState(posDirs : List[Direction],
@@ -26,52 +29,41 @@ trait PicoBot extends App {
                    moveDir : Direction ) {
     def and(nextState : State) = {
       // Sry
-      def makeWalls(posDirs : List[Direction], negDirs : List[Direction]): Surroundings = {
-        def getBlocked(d: Direction) = 
-          if (posDirs contains d)      Open 
-          else if (negDirs contains d) Blocked
-          else                         Anything
-        Surroundings( getBlocked(N), getBlocked(E), getBlocked(W), getBlocked(S) )
+      def makeWalls(posDirs : List[Direction], negDirs : List[Direction]): semantics.Surroundings = {
+        def getBlocked(d: Direction) =
+          if (negDirs contains d)      semantics.Open
+          else if (posDirs contains d) semantics.Blocked
+          else                         semantics.Anything
+        println( getBlocked(N), getBlocked(E), getBlocked(W), getBlocked(S) )
+        semantics.Surroundings( getBlocked(N), getBlocked(E), getBlocked(W), getBlocked(S) )
       }
-      val newRule = Rule(State("" + curState.hashCode()),
+
+      val newRule = semantics.Rule(semantics.State("" + curState.hashCode()),
                          makeWalls(posDirs, negDirs),
-                         moveDir.dir, 
-                         State("" + nextState.hashCode()))
-      rules = newRule :: rules
+                         moveDir.dir,
+                         semantics.State("" + nextState.hashCode()))
+      rules += newRule
     }
   }
 
   class State() {
-    def rules = {curState = this}
+    //def apply() : Unit = {curState = this}
+    def -(el: EnvList) = {curState = this; el}
   }
+ 
+  def State = new State
 
-  val N = new Direction(North)
-  val E = new Direction(East)
-  val W = new Direction(West)
-  val S = new Direction(South)
-}
+  val N = new Direction(semantics.North)
+  val E = new Direction(semantics.East)
+  val W = new Direction(semantics.West)
+  val S = new Direction(semantics.South)
 
 
-class PicoFSM extends PicoBot {
+  override def delayedInit(body : =>Unit) = {
+    body // Create the states first
 
-  val starting = new State
-  val goEast = new State
-  val downSweep = new State
-  val upSweep = new State
+    object EmptyBot extends semantics.Picobot(emptyMaze, rules.toList) with semantics.TextDisplay
 
-  starting rules;
-  -N -> N and starting
-  +N -> goEast
-
-  goEast rules;
-  -E +N -> E and goEast
-  +E +N -> downSweep
-
-  downSweep rules;
-  -S -> S and downSweep
-  +S -> W and upSweep
-
-  upSweep rules;
-  -N -> N and upSweep
-  +S -> W and downSweep
+    EmptyBot.run()
+  }
 }
