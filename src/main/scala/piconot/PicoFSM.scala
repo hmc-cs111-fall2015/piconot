@@ -1,63 +1,77 @@
-//package piconot
+package piconot
 
-//import picolib.maze.Maze
-//import picolib.semantics._
-
-//class Direction(var dir : MoveDirection) {
-class Direction(var dir : Char) {
-  def unary_+ = { new EnvList(List(), List(this), List()) }
-  def unary_- = { new EnvList(List(), List(), List(this)) }
-}
-
-class EnvList(prevRules : List[Rule],
-              posDirs : List[Direction],
-              negDirs : List[Direction]) {
-  def +(dir : Direction) = { new EnvList(prevRules, dir :: posDirs, negDirs) } // Check if it's there already
-  def -(dir : Direction) = { new EnvList(prevRules, posDirs, dir :: negDirs) } // Check if it's there already
-  //def ->(dir : Direction) = { new NeedsState(posDirs, negDirs, dir) }
-  def ->(dir : Direction) = { new NeedsState(posDirs, negDirs, dir) }
-}
-
-class NeedsState(prevRules : List[Rule],
-                 posDirs : List[Direction],
-                 negDirs : List[Direction],
-                 moveDir : Direction ) {
-  def and(nextState : String) = { new FinisedRule(prevRules, posDirs, negDirs, moveDir, nextState) }
-}
-
-class FinisedRule(prevRules : List[Rule],
-                  posDirs : List[Direction],
-                  negDirs : List[Direction],
-                  moveDir : Direction,
-                  nextState : String) {
-def makeRule(prevRules : List[Rule],
-                  posDirs : List[Direction],
-                  negDirs : List[Direction],
-                  moveDir : Direction,
-                  nextState : String) {
-  def +(dir : Direction) = {
-    newrule = Rule(State("hello"),
-    new EnvList(prevRules, dir :: posDirs, negDirs) }
-  def -(dir : Direction) = { new EnvList(prevRules, posDirs, dir :: negDirs) }
-}
-
-//class Rule(posDirs : List[Direction],
-//           negDirs : List[Direction],
-//           moveDir : Direction,
-//           nextState : String)
+import picolib.maze.Maze
+import picolib.semantics._
 
 trait PicoBot extends App {
-  val N = new Direction('N')
-  val E = new Direction('E')
-  val W = new Direction('W')
-  val S = new Direction('S')
 
-  def state(x: FinisedRule) = {}
+  var rules: List[Rule] = List()
+  var curState : State = null
+
+  class Direction(var dir : MoveDirection) {
+    def unary_+ = { new EnvList(List(this), List()) }
+    def unary_- = { new EnvList(List(), List(this)) }
+  }
+
+  class EnvList(posDirs : List[Direction],
+                negDirs : List[Direction]) {
+    def +(dir : Direction) = { new EnvList(dir :: posDirs, negDirs) } // Check if it's there already
+    def -(dir : Direction) = { new EnvList(posDirs, dir :: negDirs) } // Check if it's there already
+    def ->(dir : Direction) = { new NeedsState(posDirs, negDirs, dir) }
+    def ->(state : State) = { new NeedsState(posDirs, negDirs, new Direction(StayHere)).and(state) }
+  }
+
+  class NeedsState(posDirs : List[Direction],
+                   negDirs : List[Direction],
+                   moveDir : Direction ) {
+    def and(nextState : State) = {
+      // Sry
+      def makeWalls(posDirs : List[Direction], negDirs : List[Direction]): Surroundings = {
+        def getBlocked(d: Direction) = 
+          if (posDirs contains d)      Open 
+          else if (negDirs contains d) Blocked
+          else                         Anything
+        Surroundings( getBlocked(N), getBlocked(E), getBlocked(W), getBlocked(S) )
+      }
+      val newRule = Rule(State("" + curState.hashCode()),
+                         makeWalls(posDirs, negDirs),
+                         moveDir.dir, 
+                         State("" + nextState.hashCode()))
+      rules = newRule :: rules
+    }
+  }
+
+  class State() {
+    def rules = {curState = this}
+  }
+
+  val N = new Direction(North)
+  val E = new Direction(East)
+  val W = new Direction(West)
+  val S = new Direction(South)
 }
 
 
 class PicoFSM extends PicoBot {
-  state{
-    -N -E +S -> E and "sup"
-  }
+
+  val starting = new State
+  val goEast = new State
+  val downSweep = new State
+  val upSweep = new State
+
+  starting rules;
+  -N -> N and starting
+  +N -> goEast
+
+  goEast rules;
+  -E +N -> E and goEast
+  +E +N -> downSweep
+
+  downSweep rules;
+  -S -> S and downSweep
+  +S -> W and upSweep
+
+  upSweep rules;
+  -N -> N and upSweep
+  +S -> W and downSweep
 }

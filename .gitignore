@@ -6,3 +6,4 @@ target
 .settings
 .*.sw*
 .*.un~
+*.class

@@ -1,19 +1,20 @@
-starting = state {
-    -N -> N starting
-    +N -> goEast
-}
+  val starting = State
+  val goEast = State
+  val downSweep = State
+  val upSweep = State
 
-goEast = state {
-    -E +N -> E goEast
-    +E +N -> downSweep
-}
+  starting:
+  -N -> N starting
+  +N -> goEast
 
-downSweep = state {
-    -S -> S downSweep
-    +S -> W upSweep
-}
+  goEast:
+  -E +N -> E goEast
+  +E +N -> downSweep
 
-upSweep = state {
-    -N -> N upSweep
-    +S -> W downSweep
-}
+  downSweep:
+  -S -> S downSweep
+  +S -> W upSweep
+
+  upSweep:
+  -N -> N upSweep
+  +S -> W downSweep
