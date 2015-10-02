@@ -1,0 +1,19 @@
+starting = state {
+    -N -> N starting
+    +N -> goEast
+}
+
+goEast = state {
+    -E +N -> E goEast
+    +E +N -> downSweep
+}
+
+downSweep = state {
+    -S -> S downSweep
+    +S -> W upSweep
+}
+
+upSweep = state {
+    -N -> N upSweep
+    +S -> W downSweep
+}
