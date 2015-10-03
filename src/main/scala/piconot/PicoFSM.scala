@@ -1,10 +1,12 @@
 package piconot
 
+import scalafx.application.JFXApp
 import picolib.maze.Maze
 import picolib.semantics
 import scala.collection.mutable.MutableList
+import scala.language.experimental.macros
 
-trait PicoBot extends App {
+trait PicoBot extends JFXApp {
 
   val emptyMaze = Maze("resources/empty.txt")
 
@@ -49,9 +51,10 @@ trait PicoBot extends App {
   class State() {
     //def apply() : Unit = {curState = this}
     def -(el: EnvList) = {curState = this; el}
+    //def are(s : State) = { this = s }
   }
  
-  def State = new State
+  def States = new State
 
   val N = new Direction(semantics.North)
   val E = new Direction(semantics.East)
@@ -60,10 +63,14 @@ trait PicoBot extends App {
 
 
   override def delayedInit(body : =>Unit) = {
-    body // Create the states first
+    super.delayedInit{
+      body // Create the states first
 
-    object EmptyBot extends semantics.Picobot(emptyMaze, rules.toList) with semantics.TextDisplay
+      object EmptyBot extends semantics.Picobot(emptyMaze, rules.toList) with semantics.TextDisplay with semantics.GUIDisplay
 
-    EmptyBot.run()
+      EmptyBot.run()
+
+      stage = EmptyBot.mainStage
+    }
   }
 }

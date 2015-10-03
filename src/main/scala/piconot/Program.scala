@@ -2,10 +2,7 @@ package piconot
 
 object PicoFSM extends PicoBot {
 
-  val starting = State
-  val goEast = State
-  val downSweep = State
-  val upSweep = State
+  val starting, goEast, downSweep, upSweep = States
 
   starting-
   -N -> N and starting
