@@ -1,0 +1,58 @@
+start state "StateName"
+  rule Nopen go North
+  rule (Nclosed, Eopen) go East
+  rule (Nclosed, Eopen) turn West transition "Sweep"
+state "Sweep"
+  rule Fopen go Forward
+  rule Any go South turn Back
+
+
+enum Dir ((NEWS, Forward Back LR))
+
+enum Surroundings ((Fopen Fclosed ... Nopen Nclosed ...))
+
+enum ((singleton)) Anytype Any
+
+alias StateName = String
+
+Start = WantState
+  state: StateName => wantsRule
+
+wantsRule
+  rule: AnyType => wantsInstrs[true]
+  rule: Surroundings* => wantsInstrs[false]
+
+
+wantsInstrs (last: Bool)
+  ((don't want a rule if last))
+  go: Direction => wantsInstrs or Rule or State
+  turn: Direction => wantsInstrs or Rule or State
+  transition: StateName => wantsRule or State
+
+---
+
+State
+  val name: StateName
+  val rules: List[Rule]     // ordered
+
+Rule
+  val surroundings: Seq Surroundings
+  val action: List[Instr]
+  val transition: Option[StateName]
+
+data Instr = go Direction
+           | turn Direction
+
+wantsState
+
+wantsRule
+
+wantsInstrs
+
+current state, rule will be head of AST/head of AST's rules seq
+
+((all the wantsX has a val AST: Seq[State]))
+
+build AST in reverse order, picobot list built in reverse -> correct order
+
+any wantState (besides start state) can be implicitly converted to a list of picobot rules if Scala decides it needs it.
