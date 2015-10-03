@@ -11,6 +11,8 @@ We realized that the rules need to be in parentheses, and with commas separating
 
 Or, alternately, we go back to our original code and add the "rule" keyword before each rule and no longer require the parentheses, braces, or commas.
 
+We realized we needed to add a start object, otherwise the first state couldn't accept a parameter.
+
 ## On a scale of 1–10 (where 10 is "a lot"), how much did you have to change your syntax? 
 
 ## On a scale of 1–10 (where 10 is "very difficult"), how difficult was it to map your syntax to the provided API?
