@@ -1,6 +1,8 @@
 package piconot
 
-object PicoFSM extends PicoBot {
+object Empty extends PicoBot {
+
+  use map "resources/empty.txt"
 
   val starting, goEast, downSweep, upSweep = States
 

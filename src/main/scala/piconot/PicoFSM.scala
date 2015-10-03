@@ -8,10 +8,14 @@ import scala.language.experimental.macros
 
 trait PicoBot extends JFXApp {
 
-  val emptyMaze = Maze("resources/empty.txt")
-
+  var maze: Maze = null;
   val rules: MutableList[semantics.Rule] = new MutableList
   var curState : State = null
+
+  object use {
+    def map(path: String) = {maze = Maze(path)}
+  }
+  //def map(path: String) = {maze = Maze(path)}
 
   class Direction(val dir : semantics.MoveDirection) {
     def unary_+ = { new EnvList(List(this), List()) }
@@ -66,7 +70,7 @@ trait PicoBot extends JFXApp {
     super.delayedInit{
       body // Create the states first
 
-      object EmptyBot extends semantics.Picobot(emptyMaze, rules.toList) with semantics.TextDisplay with semantics.GUIDisplay
+      object EmptyBot extends semantics.Picobot(maze, rules.toList) with semantics.TextDisplay with semantics.GUIDisplay
 
       EmptyBot.run()
 
