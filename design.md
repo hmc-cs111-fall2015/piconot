@@ -1,13 +1,17 @@
 # Design
 
 Each state is specified independently, with its rules in a block underneath the declaration. States are declared as
+
+
 ```state StateName```
+
+
 where state names are arbitrary identifiers.
 Rules are declared with the surroundings followed by an arrow, then zero or more `go` instructions with a direction (`North`, ect.), zero or more `turn` instructions with either `Left`, `Right`, `Back`, or the cardinal directions, followed by an optional `transition` instruction with a new state. The first state declared in a program is the start state.
 
 
-Surroundings are represented by a list of one or more conditions, with the direction as a capital letter and specifiers "open" or "closed". If any directions are not specified, they will be assumed to be "*". For example, `Nopen` is equivalent to "x***", while `Wclosed, Sopen` is equivalent to "*x*W". The directions can be specified in any order, and can either be cardinal ("NEWS") or relative ("FBLR" for "Forward, Back, Left, Right"). These two types of directions can't be mixed; for instance, "Fopen Eclosed" is not allowed.
-Finally, there is the `Any` surroundings, which is interpreted as "****" and, if other rules are declared, must be declared last.
+Surroundings are represented by a list of one or more conditions, with the direction as a capital letter and specifiers "open" or "closed". If any directions are not specified, they will be assumed to be `*`. For example, `Nopen` is equivalent to `x***`, while `Wclosed, Sopen` is equivalent to `*x*W`. The directions can be specified in any order, and can either be cardinal ("NEWS") or relative ("FBLR" for "Forward, Back, Left, Right"). These two types of directions can't be mixed; for instance, "Fopen Eclosed" is not allowed.
+Finally, there is the `Any` surroundings, which is interpreted as `****` and, if other rules are declared, must be declared last.
 If there are multiple non-any rules that match multiple surroundings, the first is chosen and the compiler will output a warning.
 
 Picobot now has an implicit cardinal direction it is facing at all times, and the default is `North`. The `go` instruction doesn't change the direction it is facing, while the `turn` instruction does and does not move Picobot. Multiple `go` and `turn` directions can be specified at once, though they aren't allowed after a `transition` direction.
