@@ -12,16 +12,12 @@ import picolib.semantics._
 object PracticalTest extends JFXApp with PracticalBot {
   val rules = picobot (
     state ("0") (
-      stay (
-        check() -> "toCorner"
-      )
+      stay ("toCorner")
     ),
     state ("toCorner") (
-      move (left) {
-        check() -> continue
-      },
+      move (left)(),
       move (up) {
-        check(left -> blocked) -> continue
+        check(left -> blocked)
       },
       stay {
         check(left -> blocked, up -> blocked) -> "toRight"
@@ -29,18 +25,14 @@ object PracticalTest extends JFXApp with PracticalBot {
     ),
     
     state ("toRight") (
-      move (right) {
-        check() -> continue
-      },
+      move (right)(),
       move (down) {
         check(right -> blocked) -> "toLeft"
       }
     ),
     
     state ("toLeft") (
-      move (left) {
-        check() -> continue
-      },
+      move (left)(),
       move (down) {
         check(left -> blocked) -> "toRight"
       }

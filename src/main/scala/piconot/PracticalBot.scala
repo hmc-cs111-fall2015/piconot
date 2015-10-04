@@ -28,12 +28,15 @@ trait PracticalBot {
   }
   
   def move (dir: MoveDirection) (modifierResult: Rule*): Seq[Rule] = modifierResult match {
-      //case Seq() => DefaultRule.copy(moveDirection = dir, surroundings)
+      case Seq() => move(dir)(continue)
       case notEmpty =>  notEmpty.map {rule =>
         val surr = updateSurroundings(rule.surroundings, Seq(dir -> free))
         rule.copy(moveDirection = dir, surroundings = surr)
       }
   }
+  
+  //def move (dir: MoveDirection): Seq[Rule] = move(dir)(continue)
+  
   
   def stay (modifierResult: Rule*): Seq[Rule] = modifierResult match {
     //case Seq() => DefaultRule.copy(moveDirection = dir, surroundings)
