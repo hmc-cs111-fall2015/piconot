@@ -39,11 +39,15 @@ By changing some of the functions to classes we were able to start implementing 
 
 ...The else became too cumbersome and we are way over time at this point. We'll continue to work on this if we get time next week. 
 
-We seem to be in a good place with working code.
+We seem to be in a good place with working code right now. 
+There are some funky things about what kind of parens to use.
 
 ## On a scale of 1–10 (where 10 is "a lot"), how much did you have to change your syntax? 
 
 About 6 - we had many changed but the overall structure is similar. We did have to force the user to include more syntax-required characters.
+
+Syntax to work on: (Commented in the actual code as well)
+Else, brackets vs. braces, more keywords for intuition or allow keyword addition 
 
 ## On a scale of 1–10 (where 10 is "very difficult"), how difficult was it to map your syntax to the provided API?
 
