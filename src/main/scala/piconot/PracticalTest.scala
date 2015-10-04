@@ -11,11 +11,8 @@ import picolib.semantics._
  */
 object PracticalTest extends PracticalBot {
   picobot (
-    state ("0") (
-      stay ("toCorner")
-    ),
     state ("toCorner") (
-      move (left),
+      move(left),
       move (up) {
         check(left -> blocked)
       },

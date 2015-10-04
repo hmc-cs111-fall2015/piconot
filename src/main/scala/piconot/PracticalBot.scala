@@ -17,8 +17,8 @@ class PracticalBot extends JFXApp{
     println(rules)
     
     val maze = Maze("resources" + File.separator + "empty.txt")
-    object RuleBot extends Picobot(maze, rules)
-      with TextDisplay with GUIDisplay
+    object RuleBot extends Picobot(maze, rules) with GUIDisplay
+      //with TextDisplay with GUIDisplay
     RuleBot.run()
     stage = RuleBot.mainStage
     
@@ -34,30 +34,18 @@ class PracticalBot extends JFXApp{
     }
   }
   
-//  def move (dir: MoveDirection) (modifierResult: Rule*): Seq[Rule] = modifierResult match {
-//      case Seq() => move(dir)(continue)
-//      case notEmpty =>  notEmpty.map {rule =>
-//        val surr = updateSurroundings(rule.surroundings, Seq(dir -> free))
-//        rule.copy(moveDirection = dir, surroundings = surr)
-//      }
-//  }
-  
   class move(dir: MoveDirection, checked: Seq[MoveDirection]) {
     def apply(modifierResult: Rule*): Seq[Rule] = modifierResult match {
         case Seq() => move(dir)(continue)
         case notEmpty =>  notEmpty.map {rule =>
           val surroundings = updateSurroundings(rule.surroundings, checked map (d => d -> blocked))
+          println(rule.surroundings); println(surroundings)
           val surr = updateSurroundings(surroundings, Seq(dir -> free))
           rule.copy(moveDirection = dir, surroundings = surr)
         }
     }
-    
-    def elseMove(dir2: MoveDirection): move = {
-      move(dir2,  Seq(dir) ++ checked)
-    }
   }
   implicit def defaultMove(mv: move): Seq[Rule] = mv()
-  
   object move {
     def apply(dir: MoveDirection, modifier: Seq[MoveDirection] = Seq()): move = new move(dir, modifier)
   }
