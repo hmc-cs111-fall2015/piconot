@@ -11,14 +11,12 @@ import picolib.semantics._
  */
 class PracticalBot extends JFXApp{
   // State - 
-  def picobot(rs: Seq[Rule]*): List[Rule] = {
-    println(rs)
+  def picobot(mazename: String)(rs: Seq[Rule]*): List[Rule] = {
     val rules = rs.flatten.toList
-    println(rules)
     
-    val maze = Maze("resources" + File.separator + "empty.txt")
-    object RuleBot extends Picobot(maze, rules) with GUIDisplay
-      //with TextDisplay with GUIDisplay
+    val maze = Maze("resources" + File.separator + s"${mazename}.txt")
+    object RuleBot extends Picobot(maze, rules)
+      with TextDisplay with GUIDisplay
     RuleBot.run()
     stage = RuleBot.mainStage
     
@@ -39,7 +37,6 @@ class PracticalBot extends JFXApp{
         case Seq() => move(dir)(continue)
         case notEmpty =>  notEmpty.map {rule =>
           val surroundings = updateSurroundings(rule.surroundings, checked map (d => d -> blocked))
-          println(rule.surroundings); println(surroundings)
           val surr = updateSurroundings(surroundings, Seq(dir -> free))
           rule.copy(moveDirection = dir, surroundings = surr)
         }
