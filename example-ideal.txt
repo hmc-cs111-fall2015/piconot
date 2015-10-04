@@ -1,0 +1,19 @@
+state leftCorner {
+	move left
+	else move north goToState topCorner
+}
+
+state topCorner {
+	move up
+	else stay goToState rightTraverse 
+}
+
+state rightTraverse {
+	move right
+	else move down goToState leftTraverse
+}
+
+state leftTraverse {
+	move left
+	else move down goToState rightTraverse
+}
