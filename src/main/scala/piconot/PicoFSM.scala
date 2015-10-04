@@ -1,11 +1,12 @@
 package piconot
 
+import scalafx.application.JFXApp
 import picolib.maze.Maze
 import picolib.semantics
 import scala.collection.mutable.MutableList
 import scala.language.experimental.macros
 
-trait PicoBot extends App {
+trait PicoBot extends JFXApp {
 
   var maze: Maze = null;
   val rules: MutableList[semantics.Rule] = new MutableList
@@ -86,9 +87,12 @@ trait PicoBot extends App {
       body // Create the states first
 
       println(rules.toList)
-      object EmptyBot extends semantics.Picobot(maze, rules.toList) with semantics.TextDisplay
+      object EmptyBot extends semantics.Picobot(maze, rules.toList)
+        with semantics.TextDisplay with semantics.GUIDisplay
 
       EmptyBot.run()
+
+      stage = EmptyBot.mainStage
     }
   }
 }
