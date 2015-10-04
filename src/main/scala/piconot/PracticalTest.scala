@@ -18,10 +18,10 @@ object PracticalTest extends JFXApp with PracticalBot {
     ),
     state ("toCorner") (
       move (left) {
-        check(left -> free) -> "toCorner"
+        check() -> continue
       },
       move (up) {
-        check(left -> blocked, up -> free) -> "toCorner"
+        check(left -> blocked) -> continue
       },
       stay {
         check(left -> blocked, up -> blocked) -> "toRight"
@@ -30,19 +30,19 @@ object PracticalTest extends JFXApp with PracticalBot {
     
     state ("toRight") (
       move (right) {
-        check(right -> free) -> "toRight"
+        check() -> continue
       },
       move (down) {
-        check(right -> blocked, down -> free) -> "toLeft"
+        check(right -> blocked) -> "toLeft"
       }
     ),
     
     state ("toLeft") (
       move (left) {
-        check(left -> free) -> "toLeft"
+        check() -> continue
       },
       move (down) {
-        check(left -> blocked, down -> free) -> "toRight"
+        check(left -> blocked) -> "toRight"
       }
     )
   )

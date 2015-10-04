@@ -19,41 +19,64 @@ trait PracticalBot {
   }
   
   def state (s: State) (moveResults: Seq[Rule]*): Seq[Rule] = {
-    moveResults.flatten.map (_.copy(startState = s))
+    moveResults.flatten.map {rule =>
+      rule.endState match {
+        case UndefinedState => rule.copy(startState = s, endState = s)
+        case _ => rule.copy(startState = s)
+      }
+    }
   }
   
-  def move (dir: MoveDirection) (modifierResult: Rule*): Seq[Rule] = modifierResult match{
+  def move (dir: MoveDirection) (modifierResult: Rule*): Seq[Rule] = modifierResult match {
       //case Seq() => DefaultRule.copy(moveDirection = dir, surroundings)
-      case notEmpty =>  notEmpty.map (_.copy(moveDirection = dir))
+      case notEmpty =>  notEmpty.map {rule =>
+        val surr = updateSurroundings(rule.surroundings, Seq(dir -> free))
+        rule.copy(moveDirection = dir, surroundings = surr)
+      }
   }
   
-  def stay (modifierResult: Rule*): Seq[Rule] = modifierResult match{
+  def stay (modifierResult: Rule*): Seq[Rule] = modifierResult match {
     //case Seq() => DefaultRule.copy(moveDirection = dir, surroundings)
     case notEmpty =>  notEmpty.map (_.copy(moveDirection = StayHere))
   }
   
-  def check(args: (MoveDirection, RelativeDescription)*): Surroundings = {
-    
-    args.foldLeft(DefaultSurrounding) ((surr, arg) => 
-                                        arg._1 match {
-                                          case North => surr.copy(north = arg._2)
-                                          case South => surr.copy(south = arg._2)
-                                          case East => surr.copy(east = arg._2)
-                                          case West => surr.copy(west = arg._2)
-                                        })
+  def check(changes: (MoveDirection, RelativeDescription)*): Surroundings = {
+    updateSurroundings(DefaultSurroundings, changes)
+  }
+  
+  def updateSurroundings(surr: Surroundings, changes: Seq[(MoveDirection, RelativeDescription)]): Surroundings = {
+    changes.foldLeft(surr){
+      (surr, change) => 
+          change match {
+            case (North, desc) => surr.copy(north = desc)
+            case (South, desc) => surr.copy(south = desc)
+            case (East, desc) => surr.copy(east = desc)
+            case (West, desc) => surr.copy(west = desc)
+          }
+    }
   }
   
   implicit def stringToState(stateString: String): State = State(stateString)
-  implicit def surrToRule(ruleTuple: (Surroundings, String)): Rule = {
+  implicit def surrTupleToRule(ruleTuple: (Surroundings, String)): Rule = {
     DefaultRule.copy(surroundings = ruleTuple._1, endState = ruleTuple._2)
   }
+  implicit def stateStringToRule(stateString: String): Rule = {
+    DefaultRule.copy(endState = stateString)
+  }
+  implicit def surrToRule(surr: Surroundings): Rule = {
+    DefaultRule.copy(surroundings = surr)
+  }
   
-  val DefaultSurrounding: Surroundings = Surroundings(Anything, Anything, Anything, Anything)
+  val DefaultSurroundings: Surroundings = Surroundings(Anything, Anything, Anything, Anything)
+
+  val UndefinedStateString: String = "!!__ UN DE FI NE D __!!"
+  val UndefinedState: State = State(UndefinedStateString)
+  val continue: String = UndefinedStateString
   
-  val DefaultRule: Rule = Rule( State("default"), 
-                          DefaultSurrounding, 
+  val DefaultRule: Rule = Rule(UndefinedState, 
+                          DefaultSurroundings, 
                           StayHere, 
-                          State("default"))
+                          UndefinedState)
                           
   val n, north, up = North
   val s, south, down = South
