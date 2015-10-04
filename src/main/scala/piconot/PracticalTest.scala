@@ -15,7 +15,7 @@ object PracticalTest extends PracticalBot {
       stay ("toCorner")
     ),
     state ("toCorner") (
-      move (left) (continue),
+      move (left),
       move (up) {
         check(left -> blocked)
       },
