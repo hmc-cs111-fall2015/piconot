@@ -30,8 +30,8 @@ class Parser(val tree: AST) {
   def currentRule: Rule = currentState.rules head
 }
 
-abstract trait wantsInstructions extends Parser {
-  trait nextTraits
+trait wantsInstructions extends Parser {
+  trait nextTraits extends wantsState with wantsRule
   protected def addAction(action: Action): AST = {
     val newRule = new Rule(currentRule.surroundings, 
         action +: currentRule.actions,
@@ -53,12 +53,17 @@ abstract trait wantsInstructions extends Parser {
   }
 }
 
-trait wantsLastRuleInstructions extends wantsInstructions {
-  trait nextTraits extends wantsState
-}
-
-trait wantsNonlastRuleInstructions extends wantsInstructions {
-  trait nextTraits extends wantsState with wantsRule
+trait wantsLastRuleInstructions extends Parser {
+  val thisAsWantsInstructions = new Parser(tree) with wantsInstructions
+  def go(direction:Direction): wantsState with wantsInstructions = {
+    thisAsWantsInstructions go direction
+  }
+  def turn(direction:Direction): wantsState with wantsInstructions = {
+    thisAsWantsInstructions turn direction
+  }
+  def transition(name: Name): wantsState = {
+    thisAsWantsInstructions transition name
+  }
 }
 
 trait wantsRule extends Parser {
@@ -73,12 +78,12 @@ trait wantsRule extends Parser {
     val newState = new State(currentState.name, newRule +: currentState.rules)
     newState +: (tree tail)
   } 
-  def rule(surroundings: Surroundings*): wantsLastRuleInstructions = {
-    new Parser(addRule(surroundings)) with wantsLastRuleInstructions
+  def rule(surroundings: Surroundings*): wantsInstructions = {
+    new Parser(addRule(surroundings)) with wantsInstructions
   }
-  def rule(surroundings: Anywhere.type): wantsNonlastRuleInstructions = {
+  def rule(surroundings: Anywhere.type): wantsLastRuleInstructions = {
     val newTree = addRule(Seq())
-    new Parser(newTree) with wantsNonlastRuleInstructions
+    new Parser(newTree) with wantsLastRuleInstructions
   }
 }
 
