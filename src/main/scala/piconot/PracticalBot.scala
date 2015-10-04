@@ -12,7 +12,10 @@ import picolib.semantics._
 trait PracticalBot {
   // State - 
   def picobot(rs: Seq[Rule]*): List[Rule] = {
-    rs.flatten.toList
+    println(rs)
+    val rules = rs.flatten.toList
+    println(rules)
+    rules
   }
   
   def state (s: State) (moveResults: Seq[Rule]*): Seq[Rule] = {
