@@ -37,7 +37,9 @@ We were able to move the lines at the end of that class!
 
 By changing some of the functions to classes we were able to start implementing the else's that we wanted from before. 
 
+...The else became too cumbersome and we are way over time at this point. We'll continue to work on this if we get time next week. 
 
+We seem to be in a good place with working code.
 
 ## On a scale of 1–10 (where 10 is "a lot"), how much did you have to change your syntax? 
 
