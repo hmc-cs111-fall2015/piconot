@@ -1,38 +1,32 @@
 package piconot
 
-import java.io.File
-import scalafx.application.JFXApp
-
-import picolib.maze.Maze
-import picolib.semantics._
-
 /**
  * @author aputman
  */
-object PracticalTest extends PracticalBot {
+object Empty extends PracticalBot {
   picobot("empty") (
     state ("toCorner") (
       move(left),
-      move (up) {
+      move (up) (
         check(left -> blocked)
-      },
-      stay {
+      ),
+      stay (
         check(left -> blocked, up -> blocked) -> "toRight"
-      }
+      )
     ),
     
     state ("toRight") (
-      move (right)(),
-      move (down) {
+      move (right),
+      move (down) (
         check(right -> blocked) -> "toLeft"
-      }
+      )
     ),
     
     state ("toLeft") (
-      move (left)(),
-      move (down) {
+      move (left),
+      move (down) (
         check(left -> blocked) -> "toRight"
-      }
+      )
     )
   )
 }
