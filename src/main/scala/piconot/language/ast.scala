@@ -5,15 +5,35 @@ package piconot.language
  */
 
 // We couldn’t get Enumeration to work
-abstract sealed class Direction(val absolute: Boolean)
+abstract sealed class Direction(val absolute: Boolean) {
+  def of(that: Direction): Direction = this
+}
 case object North extends Direction(true)
 case object East extends Direction(true)
 case object South extends Direction(true)
 case object West extends Direction(true)
-case object Forward extends Direction(false)
-case object Back extends Direction(false)
-case object Left extends Direction(false)
-case object Right extends Direction(false)
+case object Forward extends Direction(false) {
+  override def of(that: Direction): Direction = that
+}
+case object Back extends Direction(false) {
+  override def of(that: Direction): Direction = Left of(Left of(that))
+}
+case object Left extends Direction(false) {
+  override def of(that: Direction): Direction = that match {
+    case North => West
+    case West => South
+    case South => East
+    case East => North
+    case Forward => Left
+    case Left => Back
+    case Back => Right
+    case Right => Forward
+  }
+  
+}
+case object Right extends Direction(false) {
+  override def of(that: Direction): Direction = Left of(Back of(that))
+}
 
 abstract sealed class Action
 case class Go(direction: Direction) extends Action {

@@ -23,8 +23,8 @@ In short: get in there and play. Push internal DSLs to the limit!
   - [X] [Sign up for teams][Teams]. Team 1 will have three people; all other 
     teams will have two people
   - [X] Design a new syntax for Picobot 
-     - [ ] Describe your design in `design.md`
-     - [ ] Before you implement the syntax, write the "empty room" program in
+     - [X] Describe your design in `design.md`
+     - [X] Before you implement the syntax, write the "empty room" program in
      `example-ideal.txt`
   - [ ] Implement your new syntax
      - [ ] Add files, as needed, to implement your syntax

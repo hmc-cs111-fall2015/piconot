@@ -4,52 +4,53 @@ start state "StateName"
   rule (Nclosed, Eopen) turn West transition "Sweep"
 state "Sweep"
   rule Fopen go Forward
-  rule Any go South turn Back
+  rule Anywhere go South turn Back
 
 
 enum Dir ((NEWS, Forward Back LR))
 
 enum Surroundings ((Fopen Fclosed ... Nopen Nclosed ...))
 
-enum ((singleton)) Anytype Any
+enum ((singleton)) Anytype Anywhere
 
 alias StateName = String
 
-Start = WantState
+Start = WantsState
   state: StateName => wantsRule
 
 wantsRule
-  rule: AnyType => wantsInstrs[true]
-  rule: Surroundings* => wantsInstrs[false]
+  rule: AnyType => wantsInstrs[wantState]
+  rule: Surroundings* => wantsInstrs[wantsRule with wantsState]
 
 
-wantsInstrs (last: Bool)
-  ((don't want a rule if last))
-  go: Direction => wantsInstrs or Rule or State
-  turn: Direction => wantsInstrs or Rule or State
-  transition: StateName => wantsRule or State
+wantsInstrs (return: TypeParameter)
+  ((if last, want to return a wantState, else, return a wantsRule))
+  go: Direction => returnType with wantsInstrs
+  turn: Direction => returnType with wantsInstrs
+  transition: StateName => returnType
 
 ---
 
 State
   val name: StateName
-  val rules: List[Rule]     // ordered
+  val rules: Seq Rule     // ordered
 
 Rule
-  val surroundings: Seq Surroundings
-  val action: List[Instr]
+  val surroundings: map[Direction, Boolean]
+  val actions: Seq Action 
   val transition: Option[StateName]
 
-data Instr = go Direction
+data Action = go Direction
            | turn Direction
 
+traits:
 wantsState
 
 wantsRule
 
 wantsInstrs
 
-current state, rule will be head of AST/head of AST's rules seq
+current (state, (rule)) will be head of AST/head of AST's rules seq
 
 ((all the wantsX has a val AST: Seq[State]))
 
