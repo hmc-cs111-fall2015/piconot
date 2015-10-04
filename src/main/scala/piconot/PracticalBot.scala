@@ -42,16 +42,25 @@ class PracticalBot extends JFXApp{
 //      }
 //  }
   
-  implicit class move(dir: MoveDirection) {
+  class move(dir: MoveDirection, checked: Seq[MoveDirection]) {
     def apply(modifierResult: Rule*): Seq[Rule] = modifierResult match {
-        case Seq() => Seq(DefaultRule)
+        case Seq() => move(dir)(continue)
         case notEmpty =>  notEmpty.map {rule =>
-          val surr = updateSurroundings(rule.surroundings, Seq(dir -> free))
+          val surroundings = updateSurroundings(rule.surroundings, checked map (d => d -> blocked))
+          val surr = updateSurroundings(surroundings, Seq(dir -> free))
           rule.copy(moveDirection = dir, surroundings = surr)
         }
     }
+    
+    def elseMove(dir2: MoveDirection): move = {
+      move(dir2,  Seq(dir) ++ checked)
+    }
   }
   implicit def defaultMove(mv: move): Seq[Rule] = mv()
+  
+  object move {
+    def apply(dir: MoveDirection, modifier: Seq[MoveDirection] = Seq()): move = new move(dir, modifier)
+  }
   
   def stay (modifierResult: Rule*): Seq[Rule] = modifierResult match {
     //case Seq() => DefaultRule.copy(moveDirection = dir, surroundings)
