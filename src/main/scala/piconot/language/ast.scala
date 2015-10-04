@@ -16,11 +16,31 @@ case object Left extends Direction(false)
 case object Right extends Direction(false)
 
 abstract sealed class Action
-case class Go(direction: Direction) extends Action
-case class Turn(direction: Direction) extends Action
+case class Go(direction: Direction) extends Action {
+  override def toString: String = "go " + (direction toString)
+}
+case class Turn(direction: Direction) extends Action {
+  override def toString: String = "turn " + (direction toString)
+}
 
 
 class Rule(val surroundings: Map[Direction, Boolean], val actions: Seq[Action],
-    val transition: Option[Name])
+    val transition: Option[Name]) {
+  override def toString: String = {
+    val surroundingString = surroundings map {
+      case (dir, open) =>
+        val letter = (dir toString) charAt 0
+        val description = if (open) "open" else "closed"
+        letter + description
+    }
+    val actionString = actions mkString " "
+    val transitionString = transition map {s"transition " + _} getOrElse ""
+    s"rule $surroundingString $actionString $transitionString"
+  }
+}
 
-class State(val name: Name, val rules: List[Rule])
+class State(val name: Name, val rules: List[Rule]) {
+  override def toString: String = {
+    "State \"" + name + "\"\n\t" + ((rules reverse) mkString "\n\t" + "\n")
+  }
+}
