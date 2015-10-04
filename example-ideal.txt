@@ -1,20 +1,17 @@
-val starting = State
-val goEast = State
-val downSweep = State
-val upSweep = State
+val starting, goEast, downSweep, upSweep = State
 
 starting:
--N -> N starting
+-N -> N
 +N -> goEast
 
 goEast:
--E +N -> E goEast
+-E +N -> E
 +E +N -> downSweep
 
 downSweep:
--S -> S downSweep
+-S -> S
 +S -> W upSweep
 
 upSweep:
--N -> N upSweep
+-N -> N
 +S -> W downSweep

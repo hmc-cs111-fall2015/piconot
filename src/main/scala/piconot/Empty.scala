@@ -7,18 +7,18 @@ object Empty extends PicoBot {
   val starting, goEast, downSweep, upSweep = States
 
   starting-
-  -N -> N and starting
+  -N -> N
   +N -> goEast
 
   goEast-
-  -E +N -> E and goEast
+  -E +N -> E
   +E +N -> downSweep
 
   downSweep-
-  -S -> S and downSweep
+  -S -> S
   +S -> W and upSweep
 
   upSweep-
-  -N -> N and upSweep
+  -N -> N
   +N -> W and downSweep
 }

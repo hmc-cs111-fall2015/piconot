@@ -19,6 +19,9 @@ work for too little reward. Each state ends with a - sign because we needed a
 function to be called. We would have preferred to use a colon, but that can't be
 a function name in Scala.
 
+We decided to make the next state optional and default to staying in the same
+state. This was inspired by other people's designs.
+
 ## On a scale of 1–10 (where 10 is "a lot"), how much did you have to change your syntax? 
 3
 
