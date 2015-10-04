@@ -9,12 +9,19 @@ import picolib.semantics._
 /**
  * @author aputman
  */
-trait PracticalBot {
+class PracticalBot extends JFXApp{
   // State - 
   def picobot(rs: Seq[Rule]*): List[Rule] = {
     println(rs)
     val rules = rs.flatten.toList
     println(rules)
+    
+    val maze = Maze("resources" + File.separator + "empty.txt")
+    object RuleBot extends Picobot(maze, rules)
+      with TextDisplay with GUIDisplay
+    RuleBot.run()
+    stage = RuleBot.mainStage
+    
     rules
   }
   

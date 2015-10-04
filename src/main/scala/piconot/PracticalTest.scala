@@ -9,13 +9,13 @@ import picolib.semantics._
 /**
  * @author aputman
  */
-object PracticalTest extends JFXApp with PracticalBot {
-  val rules = picobot (
+object PracticalTest extends PracticalBot {
+  picobot (
     state ("0") (
       stay ("toCorner")
     ),
     state ("toCorner") (
-      move (left)(),
+      move (left) (continue),
       move (up) {
         check(left -> blocked)
       },
@@ -38,9 +38,4 @@ object PracticalTest extends JFXApp with PracticalBot {
       }
     )
   )
-  val maze = Maze("resources" + File.separator + "empty.txt")
-  object RuleBot extends Picobot(maze, rules)
-    with TextDisplay with GUIDisplay
-  RuleBot.run()
-  stage = RuleBot.mainStage
 }
