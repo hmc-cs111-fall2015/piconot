@@ -37,9 +37,7 @@ package object lotrSemantics {
   }
   
   def PicoPrecious(maze: Maze, rules: RuleBuilder*): Picobot with TextDisplay with GUIDisplay = {
-    rules.foreach { x => println(x) }
     val ruleList: List[Rule] = rules.toList.map { x => x.toRule }
-    println(ruleList)
     
     object Gollumbot extends Picobot(maze, ruleList)
     with TextDisplay with GUIDisplay
