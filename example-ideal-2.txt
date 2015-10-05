@@ -1,0 +1,7 @@
+move all the way right
+move all the way up
+loop {
+    move all the way left
+    move all the way right
+    move down
+}
