@@ -4,7 +4,8 @@ package piconot.language
  * @author dhouck apinson
  */
 
-// Surroundings: Direction + open or closed
+/** Surroundings are declared by a capital char for the direction
+ *  followed by "open" or "closed" */
 sealed class Surroundings(val direction: Direction, val open: Boolean)
 case object Nopen extends Surroundings(North, true)
 case object Eopen extends Surroundings(East, true)
@@ -23,20 +24,19 @@ case object Bclosed extends Surroundings(Back, false)
 case object Lclosed extends Surroundings(Left, false)
 case object Rclosed extends Surroundings(Right, false)
 
-// Not actually a Surroundings
+/** Like a Surroundings, but for everything unspecified */
 object Anywhere
 
-// The parser takes in a tree that will be changed as rules are added
-class Parser(val tree: AST) {
-  def currentState: State = tree head
-  def currentRule: Rule = currentState.rules head
+/** The parser takes in an AST to be modified as the rules are parsed */
+sealed class Parser(val tree: AST) {
+  protected def currentState: State = tree head
+  protected def currentRule: Rule = currentState.rules head
 }
 
-// all the wantsX traits handle instructions/rules/states that can 
-// take in more instructions/rules/states
-// wantsInstructions: allows for more instructions
-trait wantsInstructions extends Parser {
-  trait nextTraits extends endOfState with wantsRule
+/** A trait for a parser where the next keyword can be an Instruction
+ *  (go, turn, transition) */
+sealed trait wantsInstructions extends Parser {
+  protected trait nextTraits extends endOfState with wantsRule
   protected def addAction(action: Action): AST = {
     val newRule = new Rule(currentRule.surroundings, 
         action +: currentRule.actions,
@@ -44,8 +44,6 @@ trait wantsInstructions extends Parser {
     val newState = new State(currentState.name, newRule +: (currentState.rules tail))
     newState +: (tree tail)
   }
-  // go and turn add the actions, then can take in more instructions
-  // or the next state
   def go(direction: Direction): nextTraits with wantsInstructions = {
     new Parser(addAction(Go(direction))) with nextTraits with wantsInstructions
   }
@@ -60,8 +58,10 @@ trait wantsInstructions extends Parser {
   }
 }
 
-trait wantsLastRuleInstructions extends Parser {
-  val thisAsWantsInstructions = new Parser(tree) with wantsInstructions
+/** A trait for the parser to read the instructions for the last rule
+ *  of a state */
+sealed trait wantsLastRuleInstructions extends Parser {
+  protected val thisAsWantsInstructions = new Parser(tree) with wantsInstructions
   def go(direction:Direction): endOfState with wantsInstructions = {
     thisAsWantsInstructions go direction
   }
@@ -73,7 +73,8 @@ trait wantsLastRuleInstructions extends Parser {
   }
 }
 
-trait wantsRule extends Parser {
+/** A trait for the parser to read the rules of a state */
+sealed trait wantsRule extends Parser {
   /**
    * Add a Rule with the given surroundings to the current state, returning the
    * new AST
@@ -94,19 +95,22 @@ trait wantsRule extends Parser {
   }
 }
 
-trait wantsState extends Parser {
+/** A trait for the parser to read a state */
+sealed trait wantsState extends Parser {
   def state(name: Name) : wantsRule = {
     new Parser((new State(name, List())) +: tree) with wantsRule
   }
 }
 
-trait endOfState extends wantsState {
+/** A trait indicating that we might done with the picobot program */
+sealed trait endOfState extends wantsState {
   import picolib.{semantics => lib}
   
   def toRules(): List[lib.Rule] = toRule(tree)
-  def toStateName(name: Name, dir: Direction): String = name + " " + dir.toString
+  protected def toStateName(name: Name, dir: Direction): String = name + " " + dir.toString
   
-  def surrToPicolibSurr(surroundings: Map[Direction, Boolean], dir: Direction): 
+  /** Converts the surroundings of a rule to the format expected by picolib */
+  protected def surrToPicolibSurr(surroundings: Map[Direction, Boolean], dir: Direction): 
     Option[lib.Surroundings] = {
     
     val (cardinalDirs, relativeDirs) = surroundings.partition(_._1.absolute)
@@ -124,7 +128,11 @@ trait endOfState extends wantsState {
     }
   }
   
-  def cardinalizeActions(ourActions: List[Action], facing: Direction): List[Action] = {
+  /** Converts relative actions to cardinal actions
+   *  
+   *  The list of actions is converted to a list of go actions followed by 
+   *  a single turn */
+  protected def cardinalizeActions(ourActions: List[Action], facing: Direction): List[Action] = {
     ourActions reverse match {
       case Nil => List(Turn(facing))
       case Go(dir)::rest => 
@@ -133,8 +141,8 @@ trait endOfState extends wantsState {
         cardinalizeActions(rest, dir of(facing))
     }
   }
-  
-  def dirToPicolibDir(dir: Direction): lib.MoveDirection = {
+  /** Converts Direction to a picolib direction */
+  protected def dirToPicolibDir(dir: Direction): lib.MoveDirection = {
     dir match {
       case North => lib.North
       case East => lib.East
@@ -145,7 +153,9 @@ trait endOfState extends wantsState {
     }
   }
   
-  def multipleDirsToRulesList(statePrefix: String, stepNumber: Int, directions: List[lib.MoveDirection], end: lib.State)
+  /** Given a list of directions, creates a list of picolib rules to go in
+   *  each direction in sequence */
+  protected def multipleDirsToRulesList(statePrefix: String, stepNumber: Int, directions: List[lib.MoveDirection], end: lib.State)
       : List[lib.Rule] = {
     val currentState = lib.State(statePrefix + stepNumber)
     val nextState =
@@ -158,8 +168,8 @@ trait endOfState extends wantsState {
         rule::(multipleDirsToRulesList(statePrefix, stepNumber + 1, rest, end))
     }
   }
-  
-  def ruleToPicolibRules(rule: Rule, stateName: Name, facing: Direction):List[lib.Rule] = {
+  /** Converts a Rule to an equivalent sequence of picolib rules */
+  protected def ruleToPicolibRules(rule: Rule, stateName: Name, facing: Direction):List[lib.Rule] = {
     val startState = toStateName(stateName, facing)
     surrToPicolibSurr(rule.surroundings, facing) match {
       case None => List()
@@ -185,7 +195,8 @@ trait endOfState extends wantsState {
     }
   }
   
-  def toRule(ast: AST): List[lib.Rule] = {
+  /** Converts an AST to a list of picolib rules */
+  protected def toRule(ast: AST): List[lib.Rule] = {
     ast.reverse flatMap {state =>
       state.rules.reverse flatMap {(rule: Rule) =>
         List(North, East, South, West) flatMap {dir =>

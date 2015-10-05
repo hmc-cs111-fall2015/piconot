@@ -5,7 +5,12 @@ package piconot.language
  */
 
 // We couldn’t get Enumeration to work
+/** Relative and cardinal directions used for actions and facing */
 abstract sealed class Direction(val absolute: Boolean) {
+  /** Returns the direction to the "this" of where "that" is
+   *  for instance:
+   *     Left of(North) returns West
+   *  Note that cardinal directions always return themselves  */
   def of(that: Direction): Direction = this
 }
 case object North extends Direction(true)
@@ -35,6 +40,7 @@ case object Right extends Direction(false) {
   override def of(that: Direction): Direction = Left of(Back of(that))
 }
 
+/** Actions are things the picobot can do from a given state */
 abstract sealed class Action
 case class Go(direction: Direction) extends Action {
   override def toString: String = "go " + (direction toString)
@@ -43,7 +49,8 @@ case class Turn(direction: Direction) extends Action {
   override def toString: String = "turn " + (direction toString)
 }
 
-
+/** A rule gives the picobot instructions on what to do 
+ *  given certain surroundings */
 class Rule(val surroundings: Map[Direction, Boolean], val actions: Seq[Action],
     val transition: Option[Name]) {
   override def toString: String = {
@@ -59,6 +66,7 @@ class Rule(val surroundings: Map[Direction, Boolean], val actions: Seq[Action],
   }
 }
 
+/** States are collections of rules for various surroundings */
 class State(val name: Name, val rules: List[Rule]) {
   override def toString: String = {
     "State \"" + name + "\"\n\t" + ((rules reverse) mkString "\n\t") + "\n"
