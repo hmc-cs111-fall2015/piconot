@@ -5,13 +5,6 @@ import picolib.semantics._
  * @author justisallen
  */
 trait language extends JFXApp{
-  //NEWS
-//      Rule( 
-//      State("0"), 
-//      Surroundings(Anything, Anything, Open, Anything), 
-//      West, 
-//      State("0")
-//    )
  
   val blank = Surroundings(Anything,Anything,Anything,Anything)
   val No = Surroundings(Open,Anything,Anything,Anything)
