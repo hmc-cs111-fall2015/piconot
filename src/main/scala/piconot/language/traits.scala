@@ -111,8 +111,8 @@ trait endOfState extends wantsState {
     
     val (cardinalDirs, relativeDirs) = surroundings.partition(_._1.absolute)
     val cardinalEquiv = relativeDirs.map{p => p._1.of(dir) -> p._2}
-    val contradictory = cardinalDirs forall{pair: (Direction,Boolean) => 
-        (cardinalEquiv get (pair._1)) != Some(!(pair._2))
+    val contradictory = cardinalDirs exists {pair: (Direction,Boolean) =>
+      (cardinalEquiv get (pair._1)) == Some(!(pair._2))
     }
     if (contradictory) None else {
       val combined = (cardinalDirs++cardinalEquiv).mapValues{if (_) lib.Open else lib.Blocked}
@@ -134,25 +134,65 @@ trait endOfState extends wantsState {
     }
   }
   
-  def ruleToPicolibRules(rule: Rule, stateName: Name, dir: Direction):List[lib.Rule] = {
-    val startState = toStateName(stateName, dir)
-    surrToPicolibSurr(rule.surroundings, dir) match {
-      case None => List()
-      case Some(surroundings) => 
-        val moveDir = North//TODO
-        val finalDir = North//TODO
-        val endState = toStateName(rule.transition getOrElse(stateName), finalDir)
-        val ruleList = List()
-        ruleList
+  def dirToPicolibDir(dir: Direction): lib.MoveDirection = {
+    dir match {
+      case North => lib.North
+      case East => lib.East
+      case South => lib.South
+      case West => lib.West
+      case _ =>
+        throw new IllegalArgumentException("Tried to treat relative direction as absolute")
     }
   }
   
-  def toRule(ast: AST) = {//TODO
-    val firstState = ast head
-    val rulesList = firstState.rules flatMap {(rule: Rule) =>
-      List(North, East, South, West) map {ruleToPicolibRules(rule, firstState.name, _)}
+  def multipleDirsToRulesList(statePrefix: String, stepNumber: Int, directions: List[lib.MoveDirection], end: lib.State)
+      : List[lib.Rule] = {
+    val currentState = lib.State(statePrefix + stepNumber)
+    val nextState =
+      if ((directions length) == 1) end else lib.State(statePrefix + (stepNumber + 1))
+    val anySurroundings = lib.Surroundings(lib.Anything,lib.Anything,lib.Anything,lib.Anything)
+    directions match {
+      case Nil => Nil
+      case (dir::rest) =>
+        val rule = lib.Rule(currentState, anySurroundings, dir, nextState)
+        rule::(multipleDirsToRulesList(statePrefix, stepNumber + 1, rest, end))
     }
-    List()
+  }
+  
+  def ruleToPicolibRules(rule: Rule, stateName: Name, facing: Direction):List[lib.Rule] = {
+    val startState = toStateName(stateName, facing)
+    surrToPicolibSurr(rule.surroundings, facing) match {
+      case None => List()
+      case Some(surroundings) => 
+        val actions = cardinalizeActions(rule.actions toList, facing)
+        val Turn(finalDir) = actions last
+        val endState = toStateName(rule.transition getOrElse(stateName), finalDir)
+        val dirsToGo = actions.init map {case Go(dir) => dirToPicolibDir(dir)}
+        dirsToGo match {
+          case Nil => List(lib.Rule(lib.State(startState),
+                                    surroundings,
+                                    lib.StayHere,
+                                    lib.State(endState)))
+          case dir::Nil => List(lib.Rule(lib.State(startState),
+                                         surroundings,
+                                         dir,
+                                         lib.State(endState)))
+          case (dir::more) =>
+            val statePrefix = startState + s" $surroundings Step "
+            val rule = lib.Rule(lib.State(startState), surroundings, dir, lib.State(statePrefix + "2"))
+            multipleDirsToRulesList(statePrefix, 2, more, lib.State(endState))
+        }
+    }
+  }
+  
+  def toRule(ast: AST): List[lib.Rule] = {
+    ast.reverse flatMap {state =>
+      state.rules.reverse flatMap {(rule: Rule) =>
+        List(North, East, South, West) flatMap {dir =>
+          ruleToPicolibRules(rule, state.name, dir)
+        }
+      }
+    } toList
   }
 }
 

@@ -26,12 +26,12 @@ In short: get in there and play. Push internal DSLs to the limit!
      - [X] Describe your design in `design.md`
      - [X] Before you implement the syntax, write the "empty room" program in
      `example-ideal.txt`
-  - [ ] Implement your new syntax
-     - [ ] Add files, as needed, to implement your syntax
+  - [X] Implement your new syntax
+     - [X] Add files, as needed, to implement your syntax
      - Include two example programs
-       - [ ] `src/main/scala/piconot/Empty.scala`
-       - [ ] `src/main/scala/piconot/RightHand.scala`
-     - [ ] Describe your implementation process in `evaluation.md`
+       - [X] `src/main/scala/piconot/Empty.scala`
+       - [X] `src/main/scala/piconot/RightHand.scala`
+     - [X] Describe your implementation process in `evaluation.md`
   - [ ] Critique another team's design and implementation
 
 ## Warm-up: Picobot

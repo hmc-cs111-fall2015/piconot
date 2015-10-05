@@ -12,16 +12,16 @@ import piconot.language._
 object Empty extends JFXApp {
   val emptyMaze = Maze("resources" + File.separator + "empty.txt")
 
-  val rules = List()
-//    start state "goNorthEast" 
-//       rule Nopen go North
-//       rule (Nclosed, Eopen) go East
-//       rule Anywhere turn West transition "Sweep"
-//    state "Sweep"
-//       rule Fopen go Forward
-//       rule Anywhere go South turn Back
-//  )
-//  println (rules.tree.toString)
+  val rules = (
+    start state "goNorthEast"
+       rule Nopen go North
+       rule (Nclosed, Eopen) go East
+       rule Anywhere turn West transition "Sweep"
+    state "Sweep"
+       rule Fopen go Forward
+       rule Anywhere go South turn Back
+  )
+  println (rules: List[picolib.semantics.Rule])
   object EmptyBot extends Picobot(emptyMaze, rules)
       with TextDisplay with GUIDisplay
   
