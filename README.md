@@ -20,18 +20,18 @@ experience how different a language's syntax can be from its semantics.
 In short: get in there and play. Push internal DSLs to the limit! 
 
 ## Checklist
-  - [ ] [Sign up for teams][Teams]. Team 1 will have three people; all other 
+  - [X] [Sign up for teams][Teams]. Team 1 will have three people; all other 
     teams will have two people
-  - [ ] Design a new syntax for Picobot 
-     - [ ] Describe your design in `design.md`
-     - [ ] Before you implement the syntax, write the "empty room" program in
+  - [X] Design a new syntax for Picobot 
+     - [X] Describe your design in `design.md`
+     - [X] Before you implement the syntax, write the "empty room" program in
      `example-ideal.txt`
-  - [ ] Implement your new syntax
-     - [ ] Add files, as needed, to implement your syntax
+  - [X] Implement your new syntax
+     - [X] Add files, as needed, to implement your syntax
      - Include two example programs
-       - [ ] `src/main/scala/piconot/Empty.scala`
-       - [ ] `src/main/scala/piconot/RightHand.scala`
-     - [ ] Describe your implementation process in `evaluation.md`
+       - [X] `src/main/scala/piconot/Empty.scala`
+       - [X] `src/main/scala/piconot/RightHand.scala`
+     - [X] Describe your implementation process in `evaluation.md`
   - [ ] Critique another team's design and implementation
 
 ## Warm-up: Picobot
