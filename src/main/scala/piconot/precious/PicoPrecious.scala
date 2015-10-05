@@ -14,7 +14,7 @@ package object lotrSemantics {
   
   
   
-  val If: RuleBuilder = new RuleBuilder
+  def If: RuleBuilder = new RuleBuilder
   
   val hold = true
   val ready = false
@@ -25,18 +25,21 @@ package object lotrSemantics {
   val LonelyMountain: MoveDirection = East
   val UndyingLands: MoveDirection = West
   val Mordor: MoveDirection = South
+  val stay: MoveDirection = StayHere
   
   val empty: RelativeDescription = Open
   val anything: RelativeDescription = Anything
   val Orcs: RelativeDescription = Blocked
   val orcs: RelativeDescription = Blocked
-  
+   
   implicit def intToState(toConvert: Int): State = {
-    new State(toConvert.toString())
+    new State((toConvert-1).toString())
   }
   
   def PicoPrecious(maze: Maze, rules: RuleBuilder*): Picobot with TextDisplay with GUIDisplay = {
-    val ruleList: List[Rule] = rules.toList.map { _.toRule }
+    rules.foreach { x => println(x) }
+    val ruleList: List[Rule] = rules.toList.map { x => x.toRule }
+    println(ruleList)
     
     object Gollumbot extends Picobot(maze, ruleList)
     with TextDisplay with GUIDisplay

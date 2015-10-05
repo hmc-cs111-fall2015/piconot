@@ -13,7 +13,7 @@ object Empty extends JFXApp {
   
   val bot  = PicoPrecious("empty.txt", 
       If you hold weapon 1
-      and Shire is empty
+      and Shire has anything
       and LonelyMountain has anything
       and UndyingLands is empty
       and Mordor has anything
@@ -24,14 +24,7 @@ object Empty extends JFXApp {
       and LonelyMountain has anything
       and UndyingLands has Orcs
       and Mordor has anything
-      then go towards Shire and ready weapon 2,
-      
-      If you hold weapon 1
-      and Shire has Orcs
-      and LonelyMountain has anything
-      and UndyingLands has anything
-      and Mordor is empty
-      then go towards Mordor and ready weapon 3,
+      then stay and ready weapon 2,
       
       If you hold weapon 2
       and Shire is empty
@@ -39,6 +32,13 @@ object Empty extends JFXApp {
       and UndyingLands has anything
       and Mordor has anything
       then go towards Shire and ready weapon 2,
+      
+      If you hold weapon 2
+      and Shire has Orcs
+      and LonelyMountain has anything
+      and UndyingLands has anything
+      and Mordor is empty
+      then go towards Mordor and ready weapon 3,
       
       If you hold weapon 3
       and Shire has anything

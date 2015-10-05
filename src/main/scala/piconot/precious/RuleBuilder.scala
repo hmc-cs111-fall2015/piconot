@@ -43,7 +43,7 @@ class RuleBuilder() {
     this
   }
   
-  def weapon(weaponNum: State) = {
+  def weapon(weaponNum: State): RuleBuilder = {
     if (setInitialState) {
       initialState = weaponNum;
     } else {
@@ -71,6 +71,10 @@ class RuleBuilder() {
     is(contents)
   }
   
+  def then (stay: MoveDirection): RuleBuilder = {
+    resultDirection = stay
+    this
+  }
   def then(unused: Any): RuleBuilder = this
   
   def towards(direction: MoveDirection): RuleBuilder = {
