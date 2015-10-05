@@ -1,5 +1,7 @@
 package piconot.language
 
+import scala.language.postfixOps
+
 /**
  * @author dhouck apinson
  */

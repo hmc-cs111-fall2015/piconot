@@ -1,5 +1,7 @@
 package piconot.language
 
+import scala.language.postfixOps
+
 /**
  * @author dhouck apinson
  */
@@ -32,6 +34,9 @@ sealed class Parser(val tree: AST) {
   protected def currentState: State = tree head
   protected def currentRule: Rule = currentState.rules head
 }
+
+/** The start keyword */
+object start extends Parser(Seq()) with wantsState
 
 /** A trait for a parser where the next keyword can be an Instruction
  *  (go, turn, transition) */
@@ -130,13 +135,14 @@ sealed trait endOfState extends wantsState {
   
   /** Converts relative actions to cardinal actions
    *  
-   *  The list of actions is converted to a list of go actions followed by 
-   *  a single turn */
-  protected def cardinalizeActions(ourActions: List[Action], facing: Direction): List[Action] = {
+   *  The list of actions is converted to a list of go actions and a single turn */
+  protected def cardinalizeActions(ourActions: List[Action], facing: Direction)
+      : (List[Go], Turn) = {
     ourActions reverse match {
-      case Nil => List(Turn(facing))
-      case Go(dir)::rest => 
-        Go(if (dir.absolute) dir else dir of(facing))::cardinalizeActions(rest, facing)
+      case Nil => (Nil, Turn(facing))
+      case Go(dir)::rest =>
+        val (restActions, turnDir) = cardinalizeActions(rest, facing)
+        (Go(if (dir.absolute) dir else dir of(facing))::restActions, turnDir)
       case Turn(dir)::rest =>
         cardinalizeActions(rest, dir of(facing))
     }
@@ -174,8 +180,7 @@ sealed trait endOfState extends wantsState {
     surrToPicolibSurr(rule.surroundings, facing) match {
       case None => List()
       case Some(surroundings) => 
-        val actions = cardinalizeActions(rule.actions toList, facing)
-        val Turn(finalDir) = actions last
+        val (actions, Turn(finalDir)) = cardinalizeActions(rule.actions toList, facing)
         val endState = toStateName(rule.transition getOrElse(stateName), finalDir)
         val dirsToGo = actions.init map {case Go(dir) => dirToPicolibDir(dir)}
         dirsToGo match {

@@ -1,5 +1,7 @@
 package piconot
 
+import scala.language.implicitConversions
+
 /**
  * @author dhouck apinson
  */
@@ -9,8 +11,7 @@ package object language {
   type Name = String
   /** The abstract syntax tree for our language */
   type AST = Seq[State]
-  /** The start keyword */
-  object start extends Parser(Seq()) with wantsState
+
   /** Converts the AST to a list of picolib rules */
   implicit def astToPicolibRules(eos: endOfState) = eos.toRules()
   
