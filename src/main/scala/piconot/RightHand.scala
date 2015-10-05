@@ -28,7 +28,7 @@ object RightHand extends JFXApp {
   )
 
   object RightHandBot extends Picobot(rightHandMaze, rulesFast)
-      /*with TextDisplay*/ with GUIDisplay
+      with TextDisplay with GUIDisplay
   
     RightHandBot.run()
   

@@ -43,17 +43,17 @@ case object Right extends Direction(false) {
 }
 
 /** Actions are things the picobot can do from a given state */
-abstract sealed class Action
-case class Go(direction: Direction) extends Action {
+private[language] abstract sealed class Action
+private[language] case class Go(direction: Direction) extends Action {
   override def toString: String = "go " + (direction toString)
 }
-case class Turn(direction: Direction) extends Action {
+private[language] case class Turn(direction: Direction) extends Action {
   override def toString: String = "turn " + (direction toString)
 }
 
 /** A rule gives the picobot instructions on what to do 
  *  given certain surroundings */
-class Rule(val surroundings: Map[Direction, Boolean], val actions: Seq[Action],
+private[language] class Rule(val surroundings: Map[Direction, Boolean], val actions: Seq[Action],
     val transition: Option[Name]) {
   override def toString: String = {
     val surroundingString = surroundings map {
@@ -69,7 +69,7 @@ class Rule(val surroundings: Map[Direction, Boolean], val actions: Seq[Action],
 }
 
 /** States are collections of rules for various surroundings */
-class State(val name: Name, val rules: List[Rule]) {
+private[language] class State(val name: Name, val rules: List[Rule]) {
   override def toString: String = {
     "State \"" + name + "\"\n\t" + ((rules reverse) mkString "\n\t") + "\n"
   }

@@ -30,7 +30,7 @@ case object Rclosed extends Surroundings(Right, false)
 object Anywhere
 
 /** The parser takes in an AST to be modified as the rules are parsed */
-sealed class Parser(val tree: AST) {
+sealed class Parser(protected val tree: AST) {
   protected def currentState: State = tree head
   protected def currentRule: Rule = currentState.rules head
 }
@@ -138,7 +138,7 @@ sealed trait endOfState extends wantsState {
    *  The list of actions is converted to a list of go actions and a single turn */
   protected def cardinalizeActions(ourActions: List[Action], facing: Direction)
       : (List[Go], Turn) = {
-    ourActions reverse match {
+    ourActions match {
       case Nil => (Nil, Turn(facing))
       case Go(dir)::rest =>
         val (restActions, turnDir) = cardinalizeActions(rest, facing)
@@ -180,9 +180,9 @@ sealed trait endOfState extends wantsState {
     surrToPicolibSurr(rule.surroundings, facing) match {
       case None => List()
       case Some(surroundings) => 
-        val (actions, Turn(finalDir)) = cardinalizeActions(rule.actions toList, facing)
+        val (actions, Turn(finalDir)) = cardinalizeActions(rule.actions.toList.reverse, facing)
         val endState = toStateName(rule.transition getOrElse(stateName), finalDir)
-        val dirsToGo = actions.init map {case Go(dir) => dirToPicolibDir(dir)}
+        val dirsToGo = actions map {case Go(dir) => dirToPicolibDir(dir)}
         dirsToGo match {
           case Nil => List(lib.Rule(lib.State(startState),
                                     surroundings,
@@ -195,7 +195,7 @@ sealed trait endOfState extends wantsState {
           case (dir::more) =>
             val statePrefix = startState + s" $surroundings Step "
             val rule = lib.Rule(lib.State(startState), surroundings, dir, lib.State(statePrefix + "2"))
-            multipleDirsToRulesList(statePrefix, 2, more, lib.State(endState))
+            rule::multipleDirsToRulesList(statePrefix, 2, more, lib.State(endState))
         }
     }
   }
