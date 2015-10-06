@@ -23,7 +23,7 @@ For example, our picobot uses named states, so that users can indicate the
 purpose of each state and refer to states using that purpose.
 
 It also features commutative direction specifications. Users can write `+N +E`
-or `+E +E` and they are treated as equivalent.
+or `+E +N` and they are treated as equivalent.
 
 ## What behaviors are more difficult to express in your design than in Picobot’s original design? If there are no such behaviors, why not?
 
