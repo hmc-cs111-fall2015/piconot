@@ -1,0 +1,17 @@
+val starting, goEast, downSweep, upSweep = State
+
+starting:
+-N -> N
++N -> goEast
+
+goEast:
+-E +N -> E
++E +N -> downSweep
+
+downSweep:
+-S -> S
++S -> W upSweep
+
+upSweep:
+-N -> N
++S -> W downSweep
